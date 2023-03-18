@@ -24,7 +24,7 @@ public class Bullet {
   }
     
   public void collison(){
-    if(enemy.spawn <= 1){
+    if(enemy.spawn > 1){
       if(enemy.x - (x+5) <= 0 && enemy.y - (y+5) <= 0){
         enemy.health -= damage;
         pierce--;
