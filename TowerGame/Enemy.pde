@@ -1,12 +1,13 @@
 public class Enemy {
   public float x, y, rotate, size, speed, tX, tY, health, spawn;
+  public boolean targeted = false;
 
   Enemy(){
       spawn = random(2);
       if(spawn <= 1){
           x = random(0, 500);
-          y = random(0, 250);
-          if(y > 50){
+          y = random(0, 200);
+          if(y > 100){
             if(x > 250){
               x = 500;
             }else{
@@ -18,8 +19,8 @@ public class Enemy {
        
       } else{
           x = random(0, 500);
-          y = random(250,500);
-          if(y < 450){
+          y = random(270,500);
+          if(y < 400){
             if(x > 250){
               x = 500;
             }else{

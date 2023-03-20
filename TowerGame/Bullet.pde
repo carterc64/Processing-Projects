@@ -19,22 +19,25 @@ public class Bullet {
   public void update(){
     this.x = lerp(x, tX, speed);
     this.y = lerp(y, tY, speed);
-    this.collison();
+   // this.collison();
     this.speed += 0.0003;
   }
     
-  public void collison(){
+  public boolean collison(){
     if(enemy.spawn > 1){
       if(enemy.x - (x+5) <= 0 && enemy.y - (y+5) <= 0){
         enemy.health -= damage;
         pierce--;
+        return true;
       } 
     } else {
       if(enemy.x - (x-5) >= 0 && enemy.y - (y-5) >= 0){
         enemy.health -= damage;
         pierce--;
+        return true;
       } 
     }
+    return false;
   }
  
   
