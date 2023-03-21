@@ -5,7 +5,7 @@ public class Tower {
   float x, y, radius;
   int health, cooldown;
  
-  Tower(){
+  Tower(PVector origin){
     x = 250;
     y = 250;
     radius = 80;
