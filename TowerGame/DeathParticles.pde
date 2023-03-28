@@ -14,6 +14,10 @@ class DeathParticles{
     }
   }
   
+  void addParticle(PVector point){
+    particles.add(new Particle(point));
+  }
+  
   void run(){
     for (int i = 0; i < particles.size(); i++){
       Particle p = particles.get(i);

@@ -6,8 +6,10 @@ public class Tower {
   int health, cooldown;
  
   Tower(PVector origin){
-    x = 250;
-    y = 250;
+    //System.out.println(origin.x);
+    x = origin.x;
+    //System.out.println(x);
+    y = origin.y;
     radius = 80;
     health = 100;
     cooldown = 1000;

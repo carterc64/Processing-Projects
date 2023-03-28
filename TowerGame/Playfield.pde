@@ -1,85 +1,128 @@
 
+int count =  0;
+int reloadCd = 30;
+int enemyIndex = 0;
+int enemySize = 0;
+int enemyCd = 15;
+int maxEnemys = 10;
+int screenHeight = 500;
+int screenWidth = 500;
+int gunAmount = 5;
+int lastSector = 5;
+
+PVector center = new PVector (screenWidth/2,screenHeight/2);
+
+ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+ArrayList<Enemy> enemys = new ArrayList<Enemy>();
+ArrayList<Gun> guns = new ArrayList<Gun>();
+
+Tower tower = new Tower(center);
+Enemy enemy;
+Bullet bullet;
+DeathParticles dp = new DeathParticles();
+
 void setup() {
   size(500,500);
   background(0);
   noStroke();
   fill(255);
   rectMode(CENTER);
-  frameRate(30);
-  guns.add(new Gun());
-  guns.add(new Gun());
+  frameRate(40);
+  for(int i = 0; i < gunAmount; i++){
+    guns.add(new Gun());
+  }
+
 }
 
-Tower tower = new Tower(new PVector(width/2, height/2));
-Enemy enemy = new Enemy();
-Bullet bullet = new Bullet(enemy);
-DeathParticles dp = new DeathParticles();
-
-int count =  0;
-int reloadCd = 30;
-int enemyIndex = 0;
-int enemySize = 0;
-int shot = 0;
-int enemyCd = 15;
-int maxEnemys = 10;
-
-ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-ArrayList<Enemy> enemys = new ArrayList<Enemy>();
-ArrayList<Gun> guns = new ArrayList<Gun>();
-
+//Spawns based off of current frame
+//enemyCd-frames between spawning
+//maxEnemys-max enemys on screen
+//enemySize-current amount of enemys
 void spawn(int frames){
   if(enemySize < maxEnemys){
     if(frames >= count + enemyCd){
-        enemys.add(new Enemy());
+        enemy = new Enemy();
+        enemys.add(enemy);
         enemySize++;
         count = frames;
     }
   }
 }
 
-void target(){
-  if(enemyIndex < enemySize){
-    enemy = enemys.get(enemyIndex);
-    //if(enemy.targeted == false){
-      enemy.targeted = true;
-      bullet = new Bullet(enemy);
-      bullets.add(bullet);
-      shot++;
-     // if(enemy.health <= bullet.damage){
-        //enemy.health -= bullet.damage;
-      enemyIndex++;
-      //} else{
-        //enemy.health -= bullet.damage;
-      }
-     // enemyIndex++;
-     // enemy.targeted = true;
-    //} else {
-    //  enemyIndex++;
-    //}
- // } else{
-     //enemyIndex = 0;
-  //}
+//Targets gun on specific enemy
+//gun.enemy-guns current target
+//gun.shot-bullets fired from magazine
+void target(Gun gun){
+  if(gun.enemy != null){
+        bullet = new Bullet(gun.enemy);
+        bullets.add(bullet);
+        gun.shot++;
+        if(gun.enemy.health - gun.shot*bullet.damage <= 0){
+          gun.enemy = null;
+          gun.shot = 0;
+        }
+   } else {
+     if(enemyIndex < enemySize){
+       gun.enemy = enemys.get(enemyIndex);
+       enemyIndex++;
+     }
+  }
 }
 
+//fires at guns current enemy after gun cd is used
 void fire(Gun gun){
   if(gun.frameShot  <= frameCount){
       gun.frameShot = frameCount + gun.cd;
-     // System.out.println(gun.frameShot);
       if(gun.magazine == 0){
           gun.frameShot += gun.reload;
           gun.magazine = 10;
       }
       gun.magazine--;
-     // System.out.println("Shot" + gun.magazine);
-      target();
+      target(gun);
   }
 }
-  
+
+//collison based off straight line between enemy and bullet
+ public boolean collison(Bullet bullet, Enemy enemy){
+    if(enemy.spawn > 1){
+      if(enemy.sector == 0){
+        if(enemy.x - (bullet.x+5) <= 0 && enemy.y - (bullet.y+5) <= 0){
+          enemy.health -= bullet.damage;
+          bullet.pierce--;
+          return true;
+        } 
+      } else {
+        if(enemy.x - (bullet.x) >= 0 && enemy.y - (bullet.y) <= 0){
+          enemy.health -= bullet.damage;
+          bullet.pierce--;
+          return true;
+        } 
+      }
+    } else {
+      if(enemy.sector == 0){
+        if(enemy.x - (bullet.x-5) >= 0 && enemy.y - (bullet.y-5) >= 0){
+          enemy.health -= bullet.damage;
+          bullet.pierce--;
+          return true;
+        } 
+      } else {
+        if(enemy.x - (bullet.x) <= 0 && enemy.y - (bullet.y) >= 0){
+          enemy.health -= bullet.damage;
+          bullet.pierce--;
+          return true;
+        } 
+      }
+    }
+    return false;
+  }
+
+
 
 void draw(){
   background(0);
   tower.display();
   spawn(frameCount);
+  
   for(int i = 0; i < enemySize; i++){
       enemys.get(i).display();
   }
@@ -90,8 +133,8 @@ void draw(){
   
   for(int i = 0; i < bullets.size(); i++){
       bullet = bullets.get(i);
-      if(bullet.collison()){
-         // bullet.enemy.targeted = false;
+      enemy = bullet.enemy;
+      if(collison(bullet, enemy)){
           if(bullet.pierce <= 0){
             bullets.remove(i);
             i--;
@@ -101,10 +144,11 @@ void draw(){
             enemys.remove(bullet.enemy);
             enemyIndex--;
             enemySize--;
-          } 
+          } else{
+            bullet.enemy.hitAnimation(dp);
+          }
      }
      bullet.display();
   }
   dp.run();
-  noStroke();
 }
