@@ -1,0 +1,27 @@
+3/28/23
+Started Update Log
+Current:
+  Health size change-done
+  Collison edge case fix-done
+  Collison method update-done
+  HitAnimation-done
+  DeathAnimation-done
+  Multi health enemy targeting-done
+  Gun functionality-done
+  Blinking bullets fix-done
+  Blinking particles fix-done
+  
+ToAdd:
+  Tower collison
+  Tower Health tracking
+  Method documentation
+  Cleaning
+  Add new gun()
+  Blanket collison detection?
+  Enemy on enemy collison
+  Adding text
+  Rotating squares and bullets
+  Implementing playfield as setup class
+  Adding level implementation
+  Game over animation
+  
