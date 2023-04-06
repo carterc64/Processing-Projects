@@ -3,16 +3,16 @@ public class Enemy {
     //public boolean targeted = false;
     public PVector position;
 
-    Enemy(){
+    Enemy(float xWidth, float yHeight, PVector center){
       sector = 0;
         spawn = random(2);
         if(spawn <= 1){
-            x = random(0, 500);
-            y = random(0, 245);
-            if(y > 100){
-              if(x > 250){
+            x = random(0, xWidth);
+            y = random(0, yHeight/2-5);
+            if(y > yHeight/5){
+              if(x > xWidth/2){
                 sector = 1;
-                x = 500;
+                x = xWidth;
               }else{
                 x = 0;
               }
@@ -21,24 +21,24 @@ public class Enemy {
             }
          
         } else{
-            x = random(0, 500);
-            y = random(255,500);
-            if(y < 400){
-              if(x > 250){
-                x = 500;
+            x = random(0, xWidth);
+            y = random(yHeight/2+5, yHeight);
+            if(y < yHeight-(yHeight/5)){
+              if(x > xWidth/2){
+                x = xWidth;
               }else{
                 sector = 1;
                 x = 0;
               }
            } else {
-             y = 500;
+             y = yHeight;
            }
        }
 
         rotate = 0;
         speed = 1;
-        tX = 250;
-        tY = 250;
+        tX = center.x;
+        tY = center.y;
         health = int(random(1,4));
         if(health == 1){
           size = 20; 

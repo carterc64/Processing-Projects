@@ -10,6 +10,9 @@ Current:
   Gun functionality-done
   Blinking bullets fix-done
   Blinking particles fix-done
+  Screen size adaptability
+  Implementing playfield as setup class
+  Setup for upgrades
   
 ToAdd:
   Tower collison
@@ -21,7 +24,17 @@ ToAdd:
   Enemy on enemy collison
   Adding text
   Rotating squares and bullets
-  Implementing playfield as setup class
   Adding level implementation
   Game over animation
+  Upgrades
+  Start screen
+  Levels
   
+  
+
+4/6/23
+Added:
+  Screen size adaptability
+  Implementing playfield as setup class
+  Setup for upgrades
+

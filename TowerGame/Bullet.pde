@@ -3,9 +3,9 @@ public class Bullet {
   int damage, pierce;
   Enemy enemy;
   
-  Bullet(Enemy enemy){
-    x = 250;
-    y = 250;
+  Bullet(Enemy enemy, PVector center){
+    x = center.x;
+    y = center.y;
     radius = 10;
     tX = enemy.x;
     tY = enemy.y;
