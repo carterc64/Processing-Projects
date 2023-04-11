@@ -3,11 +3,11 @@ class Gun{
   Enemy enemy;
   
   
-  Gun(){
-    cd = 20;
+  Gun(int cd, int reload, int magazine){
+    this.cd = cd;
     frameShot = 0;
-    magazine = 10;
-    reload = 25;
+    this.magazine = magazine;
+    this.reload = reload;
     shot = 0;
   }
  

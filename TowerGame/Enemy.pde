@@ -1,9 +1,9 @@
 public class Enemy {
-    public float x, y, rotate, size, speed, tX, tY, health, spawn, sector;
+    public float x, y, rotate, size, distance, tX, tY, health, spawn, sector, speed;
     //public boolean targeted = false;
     public PVector position;
 
-    Enemy(float xWidth, float yHeight, PVector center){
+    Enemy(float xWidth, float yHeight, PVector center, float speed){
       sector = 0;
         spawn = random(2);
         if(spawn <= 1){
@@ -15,6 +15,7 @@ public class Enemy {
                 x = xWidth;
               }else{
                 x = 0;
+                y -= 50;
               }
             } else {
               y = 0;
@@ -29,6 +30,7 @@ public class Enemy {
               }else{
                 sector = 1;
                 x = 0;
+                y += 50;
               }
            } else {
              y = yHeight;
@@ -36,7 +38,8 @@ public class Enemy {
        }
 
         rotate = 0;
-        speed = 1;
+        distance = 1;
+        this.speed = speed;
         tX = center.x;
         tY = center.y;
         health = int(random(1,4));
@@ -60,9 +63,9 @@ public class Enemy {
     }
 
     public void update(){
-        this.x = lerp(tX, x, speed);
-        this.y = lerp(tY, y, speed);
-        this.speed -= 0.00007;
+        this.x = lerp(tX, x, distance);
+        this.y = lerp(tY, y, distance);
+        this.distance -= speed;
     }
 
     public void display(){

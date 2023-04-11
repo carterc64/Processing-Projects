@@ -1,9 +1,13 @@
 class Battlefield{
+  
+  boolean pause = false;
     
   int count = 0;
   int enemyIndex = 0;
   int enemySize = 0;
   int lastSector = 5;
+  int spawned = 0;
+  int dead = 0;
  
   
   int reloadCd; //30
@@ -11,9 +15,15 @@ class Battlefield{
   int maxEnemys; //10
   int screenHeight; //600
   int screenWidth;  //720
+  int gap;
   int gunAmount; //5
   int enemyAmount; // add it
-  int gap;
+  int gunCd;
+  int gunReload;
+  int gunMagazine;
+  
+  float enemySpeed;
+  float bulletSpeed;
   
   PVector center;
   
@@ -26,19 +36,24 @@ class Battlefield{
   Bullet bullet;
   DeathParticles dp;
   
-  Battlefield(int reloadCd, int enemyCd, int maxEnemys, int screenHeight, int screenWidth,
-              int gunAmount, int enemyAmount, int gap) {
+  Battlefield(int[] level, float enemySpeed, float bulletSpeed) {
                 
-    this.reloadCd = reloadCd;
-    this.enemyCd = enemyCd;
-    this.maxEnemys = maxEnemys;
-    this.screenHeight = screenHeight;
-    this.screenWidth = screenWidth;
-    this.gunAmount = gunAmount;
-    this.enemyAmount = enemyAmount;
-    this.gap = gap;
+    this.reloadCd = level[0];
+    this.enemyCd = level[1];
+    this.maxEnemys = level[2];
+    this.screenHeight = level[3];
+    this.screenWidth = level[4];
+    this.gap = level[5];
+    this.gunAmount = level[6];
+    this.enemyAmount = level[7];
+    this.gunCd = level[8];
+    this.gunReload = level[9];
+    this.gunMagazine = level[10];
+    this.enemySpeed = enemySpeed;
+    this.bulletSpeed = bulletSpeed;
     
-    center = new PVector (screenWidth/2-gap/2,screenHeight/2-gap/2);
+    
+    center = new PVector ((screenWidth)/2,(screenHeight)/2);
     
     bullets = new ArrayList<Bullet>();
     enemys = new ArrayList<Enemy>();
@@ -48,7 +63,7 @@ class Battlefield{
     dp = new DeathParticles();
     
     for(int i = 0; i < gunAmount; i++){
-      guns.add(new Gun());
+      guns.add(new Gun(gunCd, gunReload, gunMagazine));
     }
   
   }
@@ -58,9 +73,10 @@ class Battlefield{
   //maxEnemys-max enemys on screen
   //enemySize-current amount of enemys
   void spawn(int frames){
-    if(enemySize < maxEnemys){
+    if(enemySize < maxEnemys && spawned < enemyAmount){
       if(frames >= count + enemyCd){
-          enemy = new Enemy(screenHeight, screenWidth, center);
+          spawned++;
+          enemy = new Enemy(screenHeight, screenWidth, center, enemySpeed);
           enemys.add(enemy);
           enemySize++;
           count = frames;
@@ -73,13 +89,15 @@ class Battlefield{
   //gun.shot-bullets fired from magazine
   void target(Gun gun){
     if(gun.enemy != null){
-          bullet = new Bullet(gun.enemy, center);
+    
+          bullet = new Bullet(gun.enemy, center, bulletSpeed);
           bullets.add(bullet);
           gun.shot++;
           if(gun.enemy.health - gun.shot*bullet.damage <= 0){
             gun.enemy = null;
             gun.shot = 0;
           }
+      
      } else {
        if(enemyIndex < enemySize){
          gun.enemy = enemys.get(enemyIndex);
@@ -138,37 +156,52 @@ class Battlefield{
   
   
   void display(){
-    background(0);
-    tower.display();
-    spawn(frameCount);
-    
-    for(int i = 0; i < enemySize; i++){
-        enemys.get(i).display();
-    }
-    
-    for(int i = 0; i < guns.size(); i++){
-      fire(guns.get(i));
-    }
-    
-    for(int i = 0; i < bullets.size(); i++){
-        bullet = bullets.get(i);
-        enemy = bullet.enemy;
-        if(collison(bullet, enemy)){
-            if(bullet.pierce <= 0){
-              bullets.remove(i);
-              i--;
-            }
-            if(bullet.enemy.health <= 0){
-              bullet.enemy.deathAnimation(dp);
-              enemys.remove(bullet.enemy);
-              enemyIndex--;
-              enemySize--;
-            } else{
-              bullet.enemy.hitAnimation(dp);
-            }
-       }
-       bullet.display();
-    }
-    dp.run();
+  
+        background(0);
+        tower.display();
+        spawn(frameCount);
+        
+        for(int i = 0; i < enemySize; i++){
+            enemy = enemys.get(i);
+            enemy.display();
+            if(tower.collison(enemy)){
+                enemys.remove(i);
+                dead++;
+                enemyIndex--;
+                enemySize--;
+           }
+        }
+        
+        for(int i = 0; i < guns.size(); i++){
+          fire(guns.get(i));
+        }
+        
+        for(int i = 0; i < bullets.size(); i++){
+            bullet = bullets.get(i);
+            enemy = bullet.enemy;
+            if(collison(bullet, enemy)){
+                if(bullet.pierce <= 0){
+                  bullets.remove(i);
+                  i--;
+                }
+                if(bullet.enemy.health <= 0){
+                  bullet.enemy.deathAnimation(dp);
+                  enemys.remove(bullet.enemy);
+                  dead++;
+                  //System.out.println(dead);
+                  enemyIndex--;
+                  enemySize--;
+                } else{
+                  bullet.enemy.hitAnimation(dp);
+                }
+           }
+           bullet.display();
+        }
+        dp.run(); 
+        
+        if(dead == enemyAmount && dp.particles.size() == 0){
+            //dp.run();
+            enemyAmount = -1;
+        }
   }
 }

@@ -13,6 +13,8 @@ Current:
   Screen size adaptability
   Implementing playfield as setup class
   Setup for upgrades
+  Level loop
+  Setup for upgrades part 2
   
 ToAdd:
   Tower collison
@@ -24,11 +26,10 @@ ToAdd:
   Enemy on enemy collison
   Adding text
   Rotating squares and bullets
-  Adding level implementation
   Game over animation
   Upgrades
   Start screen
-  Levels
+  
   
   
 
@@ -38,3 +39,7 @@ Added:
   Implementing playfield as setup class
   Setup for upgrades
 
+4/11/23 
+Added: 
+  Level loop
+  added complete variable customality
